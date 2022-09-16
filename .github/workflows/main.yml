@@ -1,71 +1,105 @@
-##################################################
-
-# Run GitHub Super Linter against code base #
-
-##################################################
-
-
-
 ---
 
-name: Super Linter
+#################################
+
+#################################
+
+## Super Linter GitHub Actions ##
+
+#################################
+
+#################################
+
+name: Lint Code Base
 
 
 
-on: [push, pull_request]
+#
+
+# Documentation:
+
+# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions
+
+#
 
 
+
+#############################
+
+# Start the job on all push #
+
+#############################
+
+on:
+
+  push:
+
+  pull_request:
+
+    branches: [master, main]
+
+
+
+###############
+
+# Set the Job #
+
+###############
 
 jobs:
 
-  run-linters:
+  build:
 
-    name: Linters
+    # Name the Job
+
+    name: Lint Code Base
+
+    # Set the agent to run on
 
     runs-on: ubuntu-latest
 
 
 
+    ##################
+
+    # Load all steps #
+
+    ##################
+
     steps:
 
-      - name: Check out Git repository
+      ##########################
 
-        uses: actions/checkout@main
+      # Checkout the code base #
 
+      ##########################
 
+      - name: Checkout Code
 
-      - name: Prettify code
-
-        uses: Mr-Coxall/prettier_action@main
+        uses: actions/checkout@v3
 
         with:
 
-          # run Prettier and change code that needs fixing, before next section
+          # Full git history is needed to get a proper list of changed files within `super-linter`
 
-          prettier_options: --write **/*.{html,css,js,md}
-
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
 
 
 
-      - name: Run GitHub Super Linter
+      ################################
 
-        uses: github/super-linter@main
+      # Run Linter against code base #
+
+      ################################
+
+      - name: Lint Code Base
+
+        uses: github/super-linter@v4
 
         env:
 
-          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_ALL_CODEBASE: false
 
-          VALIDATE_CLANG_FORMAT: false
-
-          VALIDATE_JAVASCRIPT_STANDARD: false
-
-          VALIDATE_PYTHON_FLAKE8: false
-
-          VALIDATE_GITLEAKS: false # for secrets detection
-
-          VALIDATE_JSCPD: false # for copy and paste detection
-
-          DEFAULT_BRANCH: main
+          DEFAULT_BRANCH: master
 
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
